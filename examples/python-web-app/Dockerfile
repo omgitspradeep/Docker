@@ -6,8 +6,7 @@ WORKDIR /app
 COPY requirements.txt .
 COPY devops ./devops
 
-RUN python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN python3 -m venv /venv && /venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # --- Production Stage (Distroless) ---
 FROM gcr.io/distroless/python3-debian11
