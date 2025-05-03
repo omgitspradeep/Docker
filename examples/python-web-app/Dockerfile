@@ -6,7 +6,7 @@ WORKDIR /app
 COPY requirements.txt .
 COPY devops ./devops
 
-RUN python3 -m venv /venv && /venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
 # --- Production Stage (Distroless) ---
 FROM gcr.io/distroless/python3-debian11
