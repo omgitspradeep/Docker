@@ -16,7 +16,8 @@ RUN python -m venv /opt/venv && /opt/venv/bin/pip install --upgrade pip && /opt/
 # =====================
 # Stage 2: Runtime stage
 # =====================
-FROM python:3.11-slim
+#FROM python:3.11-slim
+FROM gcr.io/distroless/python3
 
 WORKDIR /app
 
