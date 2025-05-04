@@ -29,4 +29,4 @@ COPY --from=builder /app/requirements.txt /app/requirements.txt
 EXPOSE 8000
 
 # Use the venv's Python directly (no need to activate)
-CMD ["/app/venv/bin/python", "devops/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/app/venv/bin/python", "/app/devops/manage.py", "runserver", "0.0.0.0:8000"]
