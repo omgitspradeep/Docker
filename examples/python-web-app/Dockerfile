@@ -21,19 +21,19 @@ RUN python -m venv /opt/venv && \
 # =====================
 FROM gcr.io/distroless/python3
 
-WORKDIR /app
+# Set working directory to the Django project inside devops/
+WORKDIR /app/devops
 
-# Copy the virtual environment from the builder
+# Copy the virtual environment
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy the Django project files into the runtime image
-# Make sure this includes manage.py and all project/apps
-COPY manage.py /app/
+# Copy Django project files from devops/
 COPY devops/ /app/devops/
 
-# Use the virtual environment by default
+# Set the virtual environment's bin folder in the PATH
 ENV PATH="/opt/venv/bin:$PATH"
 
 EXPOSE 8000
 
+# Run Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
