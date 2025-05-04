@@ -23,7 +23,7 @@ WORKDIR /app
 # Copy only necessary files from builder
 COPY --from=builder /opt/venv /opt/venv
 COPY devops /app/
-#COPY requirements.txt /app/
+COPY requirements.txt /app/
 
 # Use the virtual environment by default
 ENV PATH="/opt/venv/bin:$PATH"
