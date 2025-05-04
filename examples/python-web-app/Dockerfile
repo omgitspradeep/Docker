@@ -1,32 +1,37 @@
-# --- Stage 1: Build dependencies and virtual environment ---
-FROM python:3.12-slim AS builder
+# ====================
+# Stage 1: Build stage
+# ====================
+FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-# Install build dependencies (if needed, e.g., for compiling packages)
+# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/
-COPY devops /app/
+COPY requirements.txt ./
 
 # Create virtual environment and install dependencies
-RUN python -m venv /app/venv && \
-    /app/venv/bin/pip install --upgrade pip && \
-    /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# --- Stage 2: Final, minimal image ---
-FROM python:3.12-slim
+# =====================
+# Stage 2: Runtime stage
+# =====================
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy only the virtual environment and app code from builder stage
-COPY --from=builder /app/venv /app/venv
-COPY --from=builder /app/devops /app/devops
-COPY --from=builder /app/requirements.txt /app/requirements.txt
+# Copy only necessary files from builder
+COPY --from=builder /opt/venv /opt/venv
+COPY devops /app/
+COPY requirements.txt /app/
+
+# Use the virtual environment by default
+ENV PATH="/opt/venv/bin:$PATH"
 
 EXPOSE 8000
 
-# Use the venv's Python directly (no need to activate)
-CMD ["/app/venv/bin/python", "/app/devops/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
